@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10-alpine
+    read_only: true
+    environment:
+      - POSTGRES_USER=development
+      - POSTGRES_PASSWORD=development
+      - POSTGRES_DB=auditing_service
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - db:/var/lib/pgsql/10.20/data:rw,cached
+      - ./postgres:/docker-entrypoint-initdb.d/
+    expose:
+      - "5432:5432"
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  adminer:
+    image: adminer:latest
+    depends_on:
+      - db
+    ports:
+      - 88:8080
+
+volumes:
+  db:
+    driver: local

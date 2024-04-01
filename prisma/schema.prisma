@@ -1,0 +1,77 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator class_validator {
+  provider = "prisma-class-validator-generator"
+}
+
+model Executor {
+  executorId String   @id @map("executor_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  name       String?  @map("name") @db.Uuid
+
+  auditLog   AuditLog[]   @relation()
+  executorIp ExecutorIp[] @relation()
+
+  @@map("executors")
+}
+
+model ExecutorIp {
+  executorIpId String   @id @default(uuid()) @map("executor_ip_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  executorId   String   @map("executor_id") @db.Uuid
+  ip           String?  @db.VarChar(40)
+
+  executor Executor   @relation(fields: [executorId], references: [executorId], onDelete: Cascade)
+  auditLog AuditLog[] @relation()
+
+  @@map("executors_ips")
+}
+
+model Entity {
+  entityId   String   @id @map("entity_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  entityFqcn String?  @map("entity_fqcn") @db.Uuid
+  entityName String?  @map("entity_name") @db.Uuid
+
+  auditLogs AuditLog[] @relation()
+
+  @@map("entity")
+}
+
+model AuditLog {
+  id           String     @id @default(uuid()) @map("audit_log_id") @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  chainId      String?    @map("chain_id") @db.Uuid
+  executorId   String     @map("executor_id") @db.Uuid
+  executorIpId String?    @map("executor_ip_id") @db.Uuid
+  entityId     String     @map("entity_id") @db.Uuid
+  eventType    EventType? @map("event_type")
+  note         String
+  /// @encrypted
+  diffs        String?    @map("diffs")
+
+  executor   Executor    @relation(fields: [executorId], references: [executorId], onDelete: Cascade)
+  executorIp ExecutorIp? @relation(fields: [executorIpId], references: [executorIpId], onDelete: Cascade)
+  entity     Entity      @relation(fields: [entityId], references: [entityId], onDelete: Cascade)
+
+  @@map("audit_log")
+}
+
+enum EventType {
+  CREATE
+  ACCESS
+  UPDATE
+  DELETE
+}

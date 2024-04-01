@@ -1,0 +1,73 @@
+{
+  "name": "@dan28/nodelog",
+  "version": "0.0.1",
+    "description": "Node.js API to audit and log differences between services",
+  "main": "server.ts",
+  "scripts": {
+    "lint": "tsc && npx eslint . --quiet --fix",
+    "build": "npm run lint && tsc -b --verbose",
+    "start": "node --require dotenv/config dist/src/server.js",
+    "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
+    "dev:start": "nodemon --require dotenv/config dist/src/server.js",
+    "dev:watch": "tsc -w",
+    "dev:watch:debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run dev:watch\" \"npm run dev:start\"",
+    "dev:reset": "npx prisma migrate reset --force",
+    "dev:migrate": "npx prisma migrate dev && npx prisma generate",
+    "dev:test": "npm run dev:reset && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:dmend3z/nodelog.git"
+  },
+  "keywords": [
+    "node",
+    "node.js",
+    "api",
+    "audit",
+    "log",
+    "diff",
+    "service"
+  ],
+  "author": "Daniel Mendesr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dmend3z/nodelog/issues"
+  },
+  "homepage": "https://github.com/dmend3z/nodelog#readme",
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.2",
+    "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "chai": "^5.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "jest": "^29.7.0",
+    "nock": "^13.5.4",
+    "prisma": "^5.11.0",
+    "prisma-field-encryption": "^1.5.2",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3",
+    "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.11.0",
+    "@types/axios": "^0.14.0",
+    "axios": "^1.6.8",
+    "class-validator": "^0.14.1",
+    "compress-json": "^3.0.0",
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "prisma-class-validator-generator": "^0.2.0"
+  }
+}
